@@ -29,11 +29,21 @@ module cla4(
   output       cout
 );
 
-  wire p0, p1, p2, p3;
-  wire g0, g1, g2, g3;
-  wire c1, c2, c3;
+  wire [3:0] p, g;
+  wire [4:0] c;
 
-  // TODO: your gate-level P/G, carry, and sum logic goes here.
-  // (cout should be connected to c4.) Remember the delay on every gate.
+  assign #(2) p = a ^ b;
+  assign #(2) g = a & b;
+  assign #(2) c[0] = cin;
+
+  assign #(2) c[1] = g[0] | (p[0] & c[0]);
+  assign #(2) c[2] = g[1] | (p[1] & g[0]) | (p[1] & p[0] & c[0]);
+  assign #(2) c[3] = g[2] | (p[2] & g[1]) | (p[2] & p[1] & g[0]) |
+                     (p[2] & p[1] & p[0] & c[0]);
+  assign #(2) c[4] = g[3] | (p[3] & g[2]) | (p[3] & p[2] & g[1]) |
+                     (p[3] & p[2] & p[1] & g[0]) |
+                     (p[3] & p[2] & p[1] & p[0] & c[0]);
+  assign #(2) sum = p ^ c[3:0];
+  assign #(2) cout = c[4];
 
 endmodule
