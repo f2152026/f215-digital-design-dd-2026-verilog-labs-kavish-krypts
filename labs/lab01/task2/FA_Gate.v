@@ -24,12 +24,10 @@ module FA_Gate(
   output sum,
   output cout
 );
-  wire ps, pc1, pc2;
+  wire propagate;
 
-  xor (ps,  a,   b);
-  and (pc1, a,   b);
-  xor (sum, cin, ps);
-  and (pc2, cin, ps);
-  or  (cout, pc1, pc2);
+  assign #(2) propagate = a ^ b;
+  assign #(2) sum = propagate ^ cin;
+  assign #(2) cout = (a & b) | (propagate & cin);
 
 endmodule
